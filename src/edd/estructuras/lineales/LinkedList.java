@@ -42,7 +42,19 @@ public class LinkedList<E> implements List<E> {
      * @param e E Elemento a insertar.
      */
     protected void addBefore(Node<E> node, E e) {
-        throw new UnsupportedOperationException("Metodo sin implementar.");
+        Node<E> newNode = new Node<>();
+        newNode.elem = e;
+        newNode.next = node;
+        
+        newNode.previous = node.previous;
+        if (node.previous != null) {
+            node.previous.next = newNode;
+            node.previous = newNode;
+        } else {
+            head = newNode;
+        }
+        node.previous = newNode;
+        size++;
     }
 
     /**
@@ -51,7 +63,13 @@ public class LinkedList<E> implements List<E> {
      * @param e E Elemento a insertar.
      */
     protected void addOnEmpty(E e) {
-        throw new UnsupportedOperationException("Metodo sin implementar.");
+        Node<E> newNode = new Node<>();
+        newNode.elem = e;
+        newNode.previous = head;
+        newNode.next = tail;
+        head.next = newNode;
+        tail.previous = newNode;
+        size = 1;
     }
 
     /**
@@ -61,7 +79,17 @@ public class LinkedList<E> implements List<E> {
      * @param e E Elemento a insertar.
      */
     protected void addLast(E e) {
-        throw new UnsupportedOperationException("Metodo sin implementar.");
+        Node<E> newNode = new Node<>();
+        newNode.elem = e;
+        newNode.previous = tail;
+        if (tail != null) {
+            tail.next = newNode;
+        }
+        tail = newNode;
+        if (head == null) {
+            head = newNode;
+        }
+        size++;
     }
 
     /**
