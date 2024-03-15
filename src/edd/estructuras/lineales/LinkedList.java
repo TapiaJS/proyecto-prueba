@@ -100,7 +100,22 @@ public class LinkedList<E> implements List<E> {
      * @return Node Devuelve el nodo.
      */
     protected Node<E> getNode(int index) {
-        throw new UnsupportedOperationException("Metodo sin implementar.");
+        if (index < 0 || index >= size) {
+            throw new IndexOutOfBoundsException();
+        }
+        Node<E> current;
+        if (index < size / 2) {
+            current = head;
+            for (int i = 0; i < index; i++) {
+                current = current.next;
+            }
+        } else {
+            current = tail;
+            for (int i = size - 1; i > index; i--) {
+                current = current.previous;
+            }
+        }
+        return current;
     }
 
     /**
@@ -108,39 +123,66 @@ public class LinkedList<E> implements List<E> {
      *
      * @param aux Node Nodo a borrar.
      */
-    protected void removeNode(Node<E> aux) {
-        throw new UnsupportedOperationException("Metodo sin implementar.");
+    protected void removeNode(Node<E> node) {
+        if (node.previous != null) {
+            node.previous.next = node.next;
+        } else {
+            head = node.next;
+        }
+        if (node.next != null) {
+            node.next.previous = node.previous;
+        } else {
+            tail = node.previous;
+        }
+        size--;
     }
 
     @Override
     public int size() {
-        throw new UnsupportedOperationException("Metodo sin implementar.");
-    }
+        return size;
+    }    
 
     @Override
     public boolean isEmpty() {
-        throw new UnsupportedOperationException("Metodo sin implementar.");
-    }
+        return size == 0;
+    }    
 
     @Override
     public E get(int index) {
-        throw new UnsupportedOperationException("Metodo sin implementar.");
-    }
+        Node<E> node = getNode(index);
+        return node.elem;
+    }    
 
     @Override
     public E set(int index, E e) {
-        throw new UnsupportedOperationException("Metodo sin implementar.");
-    }
+        Node<E> node = getNode(index);
+        E oldVal = node.elem;
+        node.elem = e;
+        return oldVal;
+    }    
 
     @Override
     public void add(int index, E e) {
-        throw new UnsupportedOperationException("Metodo sin implementar.");
-    }
+        if (index < 0 || index > size) {
+            throw new IndexOutOfBoundsException();
+        }
+        if (index == size) {
+            addLast(e);
+        } else if (index == 0) {
+            addBefore(head, e);
+        } else {
+            Node<E> node = getNode(index);
+            addBefore(node, e);
+        }
+    }    
 
     @Override
     public E remove(int index) {
-        throw new UnsupportedOperationException("Metodo sin implementar.");
-    }
+        Node<E> node = getNode(index);
+        E element = node.elem;
+        removeNode(node);
+        return element;
+    }    
 
     @Override
     public Iterator<E> iterator() {
