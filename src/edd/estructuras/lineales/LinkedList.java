@@ -30,9 +30,9 @@ public class LinkedList<E> implements List<E> {
      * Construye una lista vacía.
      */
     public LinkedList() {
-        head = null;
-        tail = null;
-        size = 0;
+        // Se crean los nodos centinelas, cuya referencia es muta
+        head = new Node<E>(null, tail, null);
+        tail = new Node<E>(null, null, head);
     }
 
     /**
@@ -42,17 +42,9 @@ public class LinkedList<E> implements List<E> {
      * @param e E Elemento a insertar.
      */
     protected void addBefore(Node<E> node, E e) {
-        Node<E> newNode = new Node<>();
-        newNode.elem = e;
-        newNode.next = node;
-        
-        newNode.previous = node.previous;
-        if (node.previous != null) {
-            node.previous.next = newNode;
-            node.previous = newNode;
-        } else {
-            head = newNode;
-        }
+        Node<E> newNode = new Node<E>(e, node, node.previous);
+        // Se actualizan las referencias de los nodos apuntados por el nuevo nodo
+        node.previous.next = newNode;
         node.previous = newNode;
         size++;
     }
@@ -63,10 +55,7 @@ public class LinkedList<E> implements List<E> {
      * @param e E Elemento a insertar.
      */
     protected void addOnEmpty(E e) {
-        Node<E> newNode = new Node<>();
-        newNode.elem = e;
-        newNode.previous = head;
-        newNode.next = tail;
+        Node<E> newNode = new Node<E>(e,tail,head);
         head.next = newNode;
         tail.previous = newNode;
         size = 1;
@@ -79,16 +68,9 @@ public class LinkedList<E> implements List<E> {
      * @param e E Elemento a insertar.
      */
     protected void addLast(E e) {
-        Node<E> newNode = new Node<>();
-        newNode.elem = e;
-        newNode.previous = tail;
-        if (tail != null) {
-            tail.next = newNode;
-        }
-        tail = newNode;
-        if (head == null) {
-            head = newNode;
-        }
+        Node<E> newNode = new Node<E>(e,tail,tail.previous);
+        tail.previous.next = newNode;
+        tail.previous = newNode;
         size++;
     }
 
@@ -104,14 +86,14 @@ public class LinkedList<E> implements List<E> {
             throw new IndexOutOfBoundsException();
         }
         Node<E> current;
-        if (index < size / 2) {
-            current = head;
+        if (index < size/2) {
+            current = head.next;
             for (int i = 0; i < index; i++) {
                 current = current.next;
             }
         } else {
-            current = tail;
-            for (int i = size - 1; i > index; i--) {
+            current = tail.previous;
+            for (int i = size-1; i > index; i--) {
                 current = current.previous;
             }
         }
@@ -124,64 +106,37 @@ public class LinkedList<E> implements List<E> {
      * @param aux Node Nodo a borrar.
      */
     protected void removeNode(Node<E> node) {
-        if (node.previous != null) {
-            node.previous.next = node.next;
-        } else {
-            head = node.next;
-        }
-        if (node.next != null) {
-            node.next.previous = node.previous;
-        } else {
-            tail = node.previous;
-        }
-        size--;
+
     }
 
     @Override
     public int size() {
-        return size;
+
     }    
 
     @Override
     public boolean isEmpty() {
-        return size == 0;
+
     }    
 
     @Override
     public E get(int index) {
-        Node<E> node = getNode(index);
-        return node.elem;
+
     }    
 
     @Override
     public E set(int index, E e) {
-        Node<E> node = getNode(index);
-        E oldVal = node.elem;
-        node.elem = e;
-        return oldVal;
+
     }    
 
     @Override
     public void add(int index, E e) {
-        if (index < 0 || index > size) {
-            throw new IndexOutOfBoundsException();
-        }
-        if (index == size) {
-            addLast(e);
-        } else if (index == 0) {
-            addBefore(head, e);
-        } else {
-            Node<E> node = getNode(index);
-            addBefore(node, e);
-        }
+
     }    
 
     @Override
     public E remove(int index) {
-        Node<E> node = getNode(index);
-        E element = node.elem;
-        removeNode(node);
-        return element;
+
     }    
 
     @Override
@@ -208,6 +163,18 @@ public class LinkedList<E> implements List<E> {
          * Referencia al valor que este nodo guarda.
          */
         protected E elem;
+
+        /*
+         * Constructor de un nodo que almacena:
+         * Un elemento de tipo genérico
+         * Una referencia al siguiente nodo
+         * Una referencia al nodo previo
+         */
+        public Node(E elem, Node<E> next, Node<E> previous) {
+            this.elem = elem;
+            this.next = next;
+            this.previous = previous;
+        }
 
         @Override
         public String toString() {
