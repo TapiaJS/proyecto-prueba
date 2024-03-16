@@ -106,7 +106,9 @@ public class LinkedList<E> implements List<E> {
      * @param aux Node Nodo a borrar.
      */
     protected void removeNode(Node<E> node) {
-
+        node.previous.next = node.next;
+        node.next.previous = node.previous;
+        size--;
     }
 
     @Override
@@ -127,17 +129,28 @@ public class LinkedList<E> implements List<E> {
 
     @Override
     public E set(int index, E e) {
-
+        Node<E> node = getNode(index);
+        E oldValue = node.elem;
+        node.elem = e;
+        return oldValue;
     }    
 
     @Override
     public void add(int index, E e) {
-
+        if (index == size) {
+            addLast(e);
+        } else {
+            Node<E> node = getNode(index);
+            addBefore(node, e);
+        }
     }    
 
     @Override
     public E remove(int index) {
-
+        Node<E> node = getNode(index);
+        E elem = node.elem;
+        removeNode(node);
+        return elem;
     }    
 
     @Override
