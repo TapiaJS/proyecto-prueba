@@ -137,7 +137,9 @@ public class LinkedList<E> implements List<E> {
 
     @Override
     public void add(int index, E e) {
-        if (index == size) {
+        if(size == 0 && index == 0){
+            addOnEmpty(e);
+        } else if(index == size) {
             addLast(e);
         } else {
             Node<E> node = getNode(index);
