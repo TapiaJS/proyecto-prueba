@@ -111,17 +111,18 @@ public class LinkedList<E> implements List<E> {
 
     @Override
     public int size() {
-
+        return size;
     }    
 
     @Override
     public boolean isEmpty() {
-
+        return size == 0;
     }    
 
     @Override
     public E get(int index) {
-
+        Node<E> node = getNode(index);
+        return node.elem;
     }    
 
     @Override
@@ -209,22 +210,28 @@ public class LinkedList<E> implements List<E> {
          */
         public LinkedListIterator() {
             index = 0;
-            siguiente = getNode(index);
+            /*En lugar de tomar el primer nodo real de la lista:
+             * getNode(index)
+             * Se toma el siguiente de la cabeza, es lo mismo pero queda más claro que head es el nodo centinela por el que se empieza
+             */
+            siguiente = head.next;
             canRemove = false;
         }
 
         @Override
         public boolean hasNext() {
-            return index < size;
+            /*En vez de saber si el índice es válido para la siguiente posición:
+             * index < size
+             * Se hace una valoración si el nodo siguiente es diferente a la cola
+             */
+            return siguiente != tail;
         }
 
         @Override
         public E next() {
-            E e;
-
             if (!hasNext()) throw new NoSuchElementException();
-
-            e = siguiente.elem;
+            /*No cambia nada, ya que el método regresa un objeto almacenado en el nodo y el siguiente se actualiza el siguiente nodo, además de activar la bandera*/
+            E e = siguiente.elem;
             siguiente = siguiente.next;
             index++;
             canRemove = true;
@@ -237,11 +244,8 @@ public class LinkedList<E> implements List<E> {
         public void remove() {
             if (!canRemove) throw new IllegalStateException();
 
-            if (siguiente != null) {
-                removeNode(siguiente.previous);
-            } else {
-                removeNode(tail);
-            }
+            Node<E> toRemove = siguiente.previous;
+            removeNode(toRemove);
             index--;
             canRemove = false;
         }
@@ -249,22 +253,19 @@ public class LinkedList<E> implements List<E> {
 
     @Override
     public String toString() {
-        StringBuilder sb;
-        Node<E> aux;
-
         if (isEmpty()) return "[]";
 
-        sb = new StringBuilder();
-        aux = head;
-
+        StringBuilder sb = new StringBuilder();
+        Node<E> aux = head.next;
+        
         sb.append("[");
-        while (aux != null) {
-            sb.append(aux.toString());
+        while (aux != tail) {
+            sb.append(aux.elem);
             aux = aux.next;
             if (aux != tail) sb.append(" ");
         }
         sb.append("]");
-
+        
         return sb.toString();
     }
 }
